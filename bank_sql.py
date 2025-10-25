@@ -1,11 +1,12 @@
 import mysql.connector
+from decimal import Decimal
 
 # -------------------- MySQL Config --------------------
 DB_HOST = "localhost"
 DB_USER = "root"
 DB_PASSWORD = "vishwa@12345"
 DB_NAME = "dummy"
-DB_PORT = 3306  # change if needed
+DB_PORT = 3306
 
 # -------------------- Database Connection --------------------
 def get_connection():
@@ -46,26 +47,34 @@ class BankAccount:
     def __init__(self, account_holder, pin, balance=0):
         self.account_holder = account_holder
         self.__pin = pin
-        self.__balance = balance
+        self.__balance = Decimal(balance)
 
     def verify_pin(self, pin):
         return self.__pin == pin
 
     def deposit(self, amount):
-        if amount > 0:
-            self.__balance += amount
-            return f"Deposited ₹{amount}. New balance: ₹{self.__balance}"
-        else:
-            return "Invalid deposit amount."
+        try:
+            amount = Decimal(amount)
+            if amount > 0:
+                self.__balance += amount
+                return f"Deposited ₹{amount:.2f}. New balance: ₹{self.__balance:.2f}"
+            else:
+                return "Invalid deposit amount."
+        except:
+            return "Invalid amount."
 
     def withdraw(self, amount):
-        if amount <= 0:
-            return "Invalid withdrawal amount."
-        elif amount > self.__balance:
-            return "Insufficient funds."
-        else:
-            self.__balance -= amount
-            return f"Withdrew ₹{amount}. Remaining balance: ₹{self.__balance}"
+        try:
+            amount = Decimal(amount)
+            if amount <= 0:
+                return "Invalid withdrawal amount."
+            elif amount > self.__balance:
+                return "Insufficient funds."
+            else:
+                self.__balance -= amount
+                return f"Withdrew ₹{amount:.2f}. Remaining balance: ₹{self.__balance:.2f}"
+        except:
+            return "Invalid amount."
 
     def get_balance(self):
         return self.__balance
@@ -75,22 +84,30 @@ def create_account():
     name = input("Enter account holder name: ").strip()
     pin = input("Set 4-digit PIN: ").strip()
     initial_balance = input("Initial deposit (number): ").strip()
-    if not name or not pin.isdigit() or len(pin) != 4 or not initial_balance.isdigit():
+    if not name or not pin.isdigit() or len(pin) != 4:
         print("Invalid input. Try again.")
         return
-    initial_balance = float(initial_balance)
+    try:
+        initial_balance = Decimal(initial_balance)
+    except:
+        print("Invalid deposit amount.")
+        return
 
     conn = get_connection()
     if not conn:
         return
     cursor = conn.cursor()
     try:
+        cursor.execute("SELECT 1 FROM accounts WHERE account_holder=%s LIMIT 1", (name,))
+        if cursor.fetchone():
+            print(f"Account with name '{name}' already exists.")
+            return
         cursor.execute(
             "INSERT INTO accounts (account_holder, pin, balance) VALUES (%s, %s, %s)",
             (name, pin, initial_balance)
         )
         conn.commit()
-        print(f"Account created for {name} with balance ₹{initial_balance}")
+        print(f"Account created for {name} with balance ₹{initial_balance:.2f}")
     except mysql.connector.Error as e:
         print(f"Error: {e}")
     finally:
@@ -155,26 +172,20 @@ def main():
         elif choice == "3":
             if account:
                 amount = input("Enter deposit amount: ").strip()
-                if amount.isdigit():
-                    print(account.deposit(float(amount)))
-                    update_balance(account)
-                else:
-                    print("Invalid amount.")
+                print(account.deposit(amount))
+                update_balance(account)
             else:
                 print("Login first.")
         elif choice == "4":
             if account:
                 amount = input("Enter withdrawal amount: ").strip()
-                if amount.isdigit():
-                    print(account.withdraw(float(amount)))
-                    update_balance(account)
-                else:
-                    print("Invalid amount.")
+                print(account.withdraw(amount))
+                update_balance(account)
             else:
                 print("Login first.")
         elif choice == "5":
             if account:
-                print(f"Current balance: ₹{account.get_balance()}")
+                print(f"Current balance: ₹{account.get_balance():.2f}")
             else:
                 print("Login first.")
         elif choice == "6":
