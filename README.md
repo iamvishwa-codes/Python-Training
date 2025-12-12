@@ -1,22 +1,23 @@
-# Python-Training Repository
+# FastAPI-MySQL Project
 
-This repository contains various Python projects and practice exercises to showcase skills in Python programming, OOP, database interaction, and more.
+[![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)](https://www.python.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-High%20Performance-green.svg)](https://fastapi.tiangolo.com/)
+[![MySQL](https://img.shields.io/badge/MySQL-Database-orange.svg)](https://www.mysql.com/)
+[![License](https://img.shields.io/badge/License-MIT-purple.svg)](LICENSE)
+
+This repository contains FastAPI projects and API modules built using **Python** and **MySQL**.  
+It includes banking operations, attendance management, and reusable SQL helper functions.
 
 ---
 
 ## **Projects / Files Overview**
 
-| File Name        | Description |
-|-----------------|------------|
-| `ATM.py`        | Implement basic ATM functionality with PIN validation. |
-| `Calculator.py` | Basic calculator functions (add, subtract, multiply, divide). |
-| `Chatbot.py`    | Simple chatbot implementation in Python. |
-| `Random_game.py`| Number guessing game using Python random module. |
-| `Stream_bank.py`| ATM system with Streamlit UI for interactive interface. |
-| `bank.py`       | ATM system connected to a database with CRUD operations. |
-| `hospital.py`   | Practice project or exercises related to hospital management system. |
-| `mysql.py`      | MySQL integration and practice queries. |
-| `FAST_SQL.py`   | FastAPI project connected with MySQL (if still relevant). |
+| File Name           | Description |
+|--------------------|-------------|
+| `Bank_fastapi.py`  | Banking API (create account, login, deposit, withdraw, check balance). |
+| `attendance.py`    | Attendance API for marking and retrieving attendance records. |
+| `FAST_SQL.py`      | SQL helper functions for connecting and executing MySQL operations. |
+| `README.md`        | Documentation for the FastAPI + MySQL project. |
 
 ---
 
@@ -25,4 +26,4 @@ This repository contains various Python projects and practice exercises to showc
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/iamvishwa-codes/Python-Training.git
+git clone https://github.com/iamvishwa-codes/<your-repo-name>.git
